@@ -1,21 +1,25 @@
 [project]
 name = "obsidian-workflow"
-version = "0.1"
+version = "0.0.1"
 description = "Obsidian workflow tools for automating my obsidian workflow"
 readme = "README.md"
 authors = [{name = "Brandt Beal"}]
-license = {text = "MIT"}
-requires-python = ">=3.11"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+
 classifiers = [
-    "License :: OSI Approved :: Apache Software License"
+    "License :: OSI Approved :: MIT License"
 ]
 dependencies = [
     "click",
 ]
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=66.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+license-files = []
 
 [project.urls]
 Homepage = "https://github.com/babeal/obsidian-workflow"
