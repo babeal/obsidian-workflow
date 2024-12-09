@@ -101,10 +101,6 @@ Extracted from: [[2024-12-05-Thursday]]
 
 ![[header 1.md]]
 
-# Header 1
-
-![[header 1.md]]
-
 # Header 2
 
 ![[header 2.md]]
@@ -140,4 +136,12 @@ uv sync
 
 ```sh
 uv run pytest
+```
+
+### To publish
+
+```sh
+rm -rf dist
+uv build
+uv publish --token <pypi-token>
 ```
