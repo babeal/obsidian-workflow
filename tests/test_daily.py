@@ -29,6 +29,8 @@ def test_process_single_daily_note_with_heading():
 
         assert header1_path.read_text() == ("# Header 1\n\nContent A\n\nExtracted from: [[2024-12-05-Thursday]]\n")
 
+        assert daily_note_path.read_text() == ("![[header 1]]\n")
+
 
 @freeze_time("2024-12-05")
 def test_process_single_daily_note_with_headings():
@@ -52,6 +54,8 @@ def test_process_single_daily_note_with_headings():
 
         assert header2_path.read_text() == ("# Header 2\n\nContent C\n\nExtracted from: [[2024-12-05-Thursday]]\n")
 
+        assert daily_note_path.read_text() == ("![[header 1]]\n\n![[header 2]]\n")
+
 
 @freeze_time("2024-12-05")
 def test_process_daily_note_with_front_matter():
@@ -73,6 +77,8 @@ def test_process_daily_note_with_front_matter():
             "---\ntitle: titleA\n---\n\n" "# Header 1\n\nContent A\n\nExtracted from: [[2024-12-05-Thursday]]\n"
         )
 
+        assert daily_note_path.read_text() == ("![[header 1]]\n")
+
 
 @freeze_time("2024-12-05")
 def test_process_single_daily_note_complex():
@@ -91,7 +97,7 @@ def test_process_single_daily_note_complex():
 
         assert header1_path.exists()
         assert header2_path.exists()
-        print(header1_path.read_text())
+
         assert header1_path.read_text() == (
             "# Header 1\n\nContent A\n\nExtracted from: [[2024-12-05-Thursday]]\n\n"
             "---\n\n"
@@ -100,6 +106,8 @@ def test_process_single_daily_note_complex():
         )
 
         assert header2_path.read_text() == ("# Header 2\n\nContent C\n\nExtracted from: [[2024-12-05-Thursday]]\n")
+
+        assert daily_note_path.read_text() == ("![[header 1]]\n\n![[header 2]]\n")
 
         # Process the note again to test idempotency
         process_daily_note(daily_note_path)
@@ -112,3 +120,5 @@ def test_process_single_daily_note_complex():
         )
 
         assert header2_path.read_text() == ("# Header 2\n\nContent C\n\nExtracted from: [[2024-12-05-Thursday]]\n")
+
+        assert daily_note_path.read_text() == ("![[header 1]]\n\n![[header 2]]\n")

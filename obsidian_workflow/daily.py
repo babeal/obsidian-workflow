@@ -70,7 +70,8 @@ def process_daily_note(filepath):
                 body = body[front_matter_end + 4 :].strip()
 
         # Create the sanitized filename
-        filename = sanitize_filename(title) + ".md"
+        basename = sanitize_filename(title)
+        filename = basename + ".md"
         extracted_path = daily_note_path.parent / filename
 
         if extracted_path.exists():
@@ -82,12 +83,13 @@ def process_daily_note(filepath):
                         extracted_file.write(f"{front_matter}\n\n")
                     extracted_file.write(f"{body}\n\n")
                     extracted_file.write(f"Extracted from: [[{daily_note_name}]]\n")
+                    continue
             else:
                 # Skip processing if the file exists but wasn't written in this pass
                 with open(extracted_path, "r", encoding="utf-8") as extracted_file:
                     existing_content = extracted_file.read()
                     if f"Extracted from: [[{daily_note_name}]]" in existing_content:
-                        new_content.append(f"# {title}\n\n![[{filename}]]\n")
+                        new_content.append(f"![[{basename}]]\n")
                         continue
         else:
             # Write the section to its own file
@@ -101,12 +103,10 @@ def process_daily_note(filepath):
             # Mark the file as written during this pass
             files_written.add(extracted_path)
 
-        # Add a newline between the header and the backlink
-        new_content.append(f"# {title}\n\n![[{filename}]]\n")
+        new_content.append(f"![[{basename}]]\n")
 
     # Write back to the daily file with backlinks
     with open(filepath, "w", encoding="utf-8") as file:
-        file.write("\n".join(processed_sections + new_content))
         file.write("\n".join(processed_sections + new_content))
 
 

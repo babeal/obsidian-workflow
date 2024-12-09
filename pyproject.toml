@@ -1,6 +1,6 @@
 [project]
 name = "obsidian-workflow"
-version = "0.0.1"
+version = "0.0.2"
 description = "Obsidian workflow tools for automating my obsidian workflow"
 readme = "README.md"
 authors = [{name = "Brandt Beal"}]
