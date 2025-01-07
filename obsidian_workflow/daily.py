@@ -33,13 +33,51 @@ def sanitize_filename(file_name: str) -> str:
     return file_name[:255].lower().strip()
 
 
+def split_top_level_headers(content):
+    sections = []
+    current_section = []
+    inside_code_block = False
+    header_found = False
+
+    for line in content.splitlines(keepends=True):  # Preserve line endings
+        # Toggle inside_code_block when encountering code block markers
+        if line.strip().startswith("```"):
+            inside_code_block = not inside_code_block
+            current_section.append(line)
+            continue
+
+        # Match top-level headers outside of code blocks
+        if not inside_code_block and re.match(r"^# ", line):
+            # If this is the first header, save everything before it as its own section
+            if not header_found:
+                sections.append("".join(current_section))
+                current_section = []
+                header_found = True
+            else:
+                # Save the current section if it exists
+                if current_section:
+                    sections.append("".join(current_section))
+            # Start a new section without the `# ` prefix
+            current_section = [line[2:]]  # Remove the `# ` from the header
+        else:
+            # Append to the current section
+            current_section.append(line)
+
+    # Add the last section
+    if current_section:
+        sections.append("".join(current_section))
+
+    return sections
+
+
 def process_daily_note(filepath):
     """Processes a daily note file to extract sections into separate files."""
     with open(filepath, "r", encoding="utf-8") as file:
         content = file.read()
 
     # Find all top-level headings
-    sections = re.split(r"(?m)^# ", content)
+    sections = split_top_level_headers(content)
+
     processed_sections = []
     daily_note_path = Path(filepath)
     daily_note_name = daily_note_path.stem

@@ -33,6 +33,29 @@ def test_process_single_daily_note_with_heading():
 
 
 @freeze_time("2024-12-05")
+def test_process_note_with_code_comments_in_code_block():
+    with tempfile.TemporaryDirectory() as temp_dir:
+        # Set up a mock daily note
+        daily_note_path = Path(temp_dir) / "2024" / "12-December" / "2024-12-05-Thursday.md"
+        daily_note_path.parent.mkdir(parents=True)
+        daily_note_path.write_text("# Header 1\nContent A\n\n```python\n# comment\n```\n\n")
+
+        # Process the note
+        process_daily_note(daily_note_path)
+
+        # Validate generated files
+        header1_path = daily_note_path.parent / "header 1.md"
+
+        assert header1_path.exists()
+
+        assert header1_path.read_text() == (
+            "# Header 1\n\nContent A\n\n```python\n# comment\n```\n\nExtracted from: [[2024-12-05-Thursday]]\n"
+        )
+
+        assert daily_note_path.read_text() == ("![[header 1]]\n")
+
+
+@freeze_time("2024-12-05")
 def test_process_single_daily_note_with_headings():
     # Tests a file with two different headings
     with tempfile.TemporaryDirectory() as temp_dir:
